@@ -1,5 +1,6 @@
 import time
 import pywifi
+import socket
 
 connect_status = {
     0: 'DISCONNECTED',
@@ -67,7 +68,7 @@ class WifiDriver(object):
         """返回网络状态"""
         return self.iface.status()
 
-    def scan_wifi(self, timeout=3):
+    def scan_wifi(self, timeout=1):
         """扫描可用wifi"""
         ssid_l = []
         print('start to scan ssid, wait {}s'.format(timeout))
@@ -84,7 +85,7 @@ class WifiDriver(object):
 
 if __name__ == '__main__':
 
-    wifi_instance = WifiDriver(wifi_conf2)
+    wifi_instance = WifiDriver(wifi_conf)
 
     wifi_instance.scan_wifi()
 
@@ -99,8 +100,8 @@ if __name__ == '__main__':
             break
         time.sleep(1)
 
-    import socket
-
+    ip = socket.gethostbyname(socket.gethostname())
+    print(ip)
 
     # wifi_instance.disconnect_network()
     # for i in range(10):
