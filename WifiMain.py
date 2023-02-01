@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication
 import WifiScan
 import WifiTable
 
+
 class Thread_1(QThread):  # 线程1
     def run(self):
         while True:
