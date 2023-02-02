@@ -48,3 +48,7 @@ def connect_wifi(ssid, pwd):
 
     temp_profile = iface.add_network_profile(profile)
     iface.connect(temp_profile)
+
+
+def get_wifi_status():
+    return iface.network_profiles()

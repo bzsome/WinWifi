@@ -1,11 +1,13 @@
 import time
 
+from PyQt6 import QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItem, QStandardItemModel
 from PyQt6.QtWidgets import *
 
 import WifiData
 import WifiScan
+from WifiBoard import WifiBoard
 
 headers = ["热点SID", "型号强度", "加密方式"]
 
@@ -23,7 +25,7 @@ class WifiTable(QWidget):
         super(WifiTable, self).__init__(parent)
         # 设置标题与初始大小
         self.setWindowTitle('Wifi快速连接工具')
-        self.resize(600, 400)
+        self.resize(600, 600)
         # 实例化表格视图，设置模型为自定义的模型
         self.tableView = QTableView()
         self.tableView.resize(600, 400)
@@ -43,12 +45,11 @@ class WifiTable(QWidget):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         # 绑定事件
         self.customContextMenuRequested.connect(self.generate_menu)
-        self.wifi_textView = QTextBrowser(self)  # 调取文本浏览框显示文本内容
-        self.wifi_textView.setText("- 解决win11系统切换WiFi卡顿，切换慢的问题\n- 支持记住Wifi密码，3-10秒完成WiFi的切换")
 
         # 设置布局
         layout = QVBoxLayout()
-        layout.addWidget(self.wifi_textView, stretch=1)
+        wifi_board = WifiBoard()
+        layout.addWidget(wifi_board, stretch=1)
         layout.addWidget(self.tableView, stretch=4)
         self.setLayout(layout)
 
