@@ -1,28 +1,62 @@
+import os
 import sqlite3
+from datetime import datetime
 
 global cursor, connection
-connection = sqlite3.connect("wifi.db")
+# 数据库存储目录
+db_dir = "data"
+# 数据库文件名
+db_name = "wifi.db"
+
+os.makedirs(db_dir, exist_ok=True)
+connection = sqlite3.connect(db_dir + "/" + db_name)
 cursor = connection.cursor()
 
-print("数据插入成功")
-cursor = cursor.execute("SELECT ssid, pwd, akm from wifi_pwd")
-for row in cursor:
-    print("ID = ", row[0])
-    print("NAME = ", row[1])
-    print("ADDRESS = ", row[2], "\n")
+
+def create_wifi_table():
+    try:
+        create_tb_cmd = '''
+            CREATE TABLE IF NOT EXISTS wifi_pwd(
+            ssid varchar(255), 
+            pwd varchar(255), 
+            akm varchar(64),
+            create_time datetime,
+            update_time datetime
+            )
+          '''
+        connection.execute(create_tb_cmd)
+        connection.commit()
+        return True
+    except Exception as e:
+        print("Create table failed", e)
+        return False
 
 
 def get_wifi(ssid):
     global cursor
-    res = cursor.execute("SELECT ssid, pwd, akm from wifi_pwd where ssid = ?", ssid)
+    res = cursor.execute("SELECT ssid, pwd, akm,create_time,update_time from wifi_pwd where ssid = ?", (ssid,))
     wifi = {}
     for row in res:
         wifi["ssid"] = row[0]
         wifi["pwd"] = row[1]
         wifi["akm"] = row[2]
+        wifi["create_time"] = row[3]
+        wifi["update_time"] = row[4]
+    return wifi
 
 
-def update_wifi(ssid, pwd, akm):
+def update_wifi(ssid, pwd):
     global cursor
-    cursor.execute("update wifi_pwd set pwd=?,akm=? where ssid = ?", (pwd, akm, ssid))
+    wifi = get_wifi(ssid)
+    if wifi.get("ssid") is None:
+        cursor.execute("insert into wifi_pwd (ssid,pwd,create_time) values (?,?,?)", (ssid, pwd, datetime.now()))
+    else:
+        cursor.execute("update wifi_pwd set pwd=?,update_time=? where ssid = ?", (pwd, datetime.now(), ssid))
     connection.commit()
+
+
+if __name__ == '__main__':
+    create_wifi_table()
+    update_wifi("gtneo", "12345678")
+    wifi = get_wifi("gtneo")
+    print(wifi)

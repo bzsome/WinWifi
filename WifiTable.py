@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItem, QStandardItemModel
 from PyQt6.QtWidgets import *
 
+import WifiData
 import WifiScan
 
 headers = ["热点SID", "型号强度", "加密方式"]
@@ -20,7 +21,7 @@ class Table(QWidget):
     def __init__(self, parent=None):
         super(Table, self).__init__(parent)
         # 设置标题与初始大小
-        self.setWindowTitle('QTableView表格视图的例子')
+        self.setWindowTitle('Wifi快速连接工具')
         self.resize(600, 400)
         # 实例化表格视图，设置模型为自定义的模型
         self.tableView = QTableView()
@@ -48,32 +49,31 @@ class Table(QWidget):
         self.setLayout(layout)
 
     def generate_menu(self, pos):
-        print(pos)
-
         # 获取点击行号
         for i in self.tableView.selectionModel().selection().indexes():
             rowNum = i.row()
-        # 如果选择的行索引小于2，弹出上下文菜单
-        if rowNum < 2:
-            menu = QMenu()
-            item1 = menu.addAction("连接")
-            item2 = menu.addAction("修改密码")
+        menu = QMenu()
+        item1 = menu.addAction("连接")
+        item2 = menu.addAction("修改密码")
 
-            # 转换坐标系
-            screenPos = self.tableView.mapToGlobal(pos)
-            print(screenPos)
-
-            # 被阻塞
-            action = menu.exec(screenPos)
-            if action == item1:
-                ssid = self.model.item(rowNum, 0).text()
-
-                # 第三个参数表示显示类型，可选，有正常（QLineEdit.Normal）、密碼（ QLineEdit.Password）、不显示（ QLineEdit.NoEcho）三种情况
-                pwd, ok = QInputDialog.getText(self, "连接 " + ssid, "请输入密码，无密码请留空:", text="12345678a")
-                print(ssid, pwd)
-                WifiScan.connect_wifi(ssid, pwd)
-            else:
-                return
+        # 转换坐标系
+        screenPos = self.tableView.mapToGlobal(pos)
+        # 被阻塞
+        action = menu.exec(screenPos)
+        if action == item1:
+            ssid = self.model.item(rowNum, 0).text()
+            oldPwd = ""
+            # 第三个参数表示显示类型，可选，有正常（QLineEdit.Normal）、密碼（ QLineEdit.Password）、不显示（ QLineEdit.NoEcho）三种情况
+            oldWifi = WifiData.get_wifi(ssid)
+            if oldWifi.get("ssid") is not None:
+                oldPwd = oldWifi.get("pwd")
+            newPwd, ok = QInputDialog.getText(self, "连接 " + ssid, "请输入密码，无密码请留空:", text=oldPwd)
+            WifiData.update_wifi(ssid, newPwd)
+            WifiScan.connect_wifi(ssid, newPwd)
+        if action == item2:
+            print("暂不支持")
+        else:
+            return
 
 
 def showApp():

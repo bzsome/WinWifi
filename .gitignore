@@ -10,3 +10,6 @@ build
 .idea
 *.log
 *.iml
+
+#work
+data
