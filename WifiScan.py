@@ -2,13 +2,14 @@ import time
 
 import pywifi
 
-global iface, wifiMap
+global iface, scanWifiMap
 wifi = pywifi.PyWiFi()
 iface = wifi.interfaces()[0]
+scanWifiMap = {}
 
 
 def scan_wifi(timeout=1):
-    global iface, wifiMap
+    global iface, scanWifiMap
     """扫描可用wifi"""
     wifiMapTemp = {}
     iface.scan()
@@ -27,18 +28,18 @@ def scan_wifi(timeout=1):
                 wifiMapTemp[oldWifi.ssid] = oldWifi
         else:
             wifiMapTemp[newSsid] = newWifi
-    wifiMap = wifiMapTemp
+    scanWifiMap = wifiMapTemp
     return wifiMapTemp
 
 
 def connect_wifi(ssid, pwd):
-    global iface, wifiMap
-    wifi = wifiMap.get(ssid)
+    global iface, scanWifiMap
+    sWifi = scanWifiMap.get(ssid)
     profile = pywifi.Profile()
     profile.ssid = ssid
     profile.key = pwd
-    profile.akm = wifi.akm
-    profile.auth = wifi.auth
+    profile.akm = sWifi.akm
+    profile.auth = sWifi.auth
     profile.cipher = pywifi.const.CIPHER_TYPE_CCMP
 
     """清除所有网络连接"""
