@@ -1,7 +1,10 @@
 import time
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItem, QStandardItemModel
 from PyQt6.QtWidgets import *
+
+import WifiScan
 
 headers = ["热点SID", "型号强度", "加密方式"]
 
@@ -10,7 +13,7 @@ rows = [["Newton", "80", "None"],
         ["Einstein", "70", "WPA2"],
         ["Darwin", "60", "WPA3"]]
 
-global table
+global table, wifiMap
 
 
 class Table(QWidget):
@@ -29,15 +32,48 @@ class Table(QWidget):
         self.model.setHorizontalHeaderLabels(headers)
         self.tableView.setModel(self.model)
         # 调整列宽（必须在setModel之后执行）
-        self.tableView.horizontalHeader().resizeSection(0, 200)
-        self.tableView.horizontalHeader().resizeSection(1, 100)
-        self.tableView.horizontalHeader().resizeSection(2, 100)
-        self.tableView.horizontalHeader().resizeSection(3, 100)
+        self.tableView.setColumnWidth(0, 200)
+        self.tableView.setColumnWidth(1, 100)
+        self.tableView.setColumnWidth(2, 100)
+        self.tableView.setColumnWidth(3, 100)
+
+        # 允许打开上下文菜单
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        # 绑定事件
+        self.customContextMenuRequested.connect(self.generate_menu)
 
         # 设置布局
         layout = QVBoxLayout()
         layout.addWidget(self.tableView)
         self.setLayout(layout)
+
+    def generate_menu(self, pos):
+        print(pos)
+
+        # 获取点击行号
+        for i in self.tableView.selectionModel().selection().indexes():
+            rowNum = i.row()
+        # 如果选择的行索引小于2，弹出上下文菜单
+        if rowNum < 2:
+            menu = QMenu()
+            item1 = menu.addAction("连接")
+            item2 = menu.addAction("修改密码")
+
+            # 转换坐标系
+            screenPos = self.tableView.mapToGlobal(pos)
+            print(screenPos)
+
+            # 被阻塞
+            action = menu.exec(screenPos)
+            if action == item1:
+                ssid = self.model.item(rowNum, 0).text()
+
+                # 第三个参数表示显示类型，可选，有正常（QLineEdit.Normal）、密碼（ QLineEdit.Password）、不显示（ QLineEdit.NoEcho）三种情况
+                pwd, ok = QInputDialog.getText(self, "连接 " + ssid, "请输入密码，无密码请留空:", text="12345678a")
+                print(ssid, pwd)
+                WifiScan.connect_wifi(ssid, pwd)
+            else:
+                return
 
 
 def showApp():
@@ -46,10 +82,14 @@ def showApp():
     table.show()
 
 
-def showData(ssidList):
-    ssidList = sortWifiList(ssidList)
-    table.model.setRowCount(len(ssidList))
-    for index, wifi in enumerate(ssidList):
+# 显示数据
+def showData(newWifiMap):
+    global wifiMap
+    wifiMap = newWifiMap
+    wifiList = list(wifiMap.values())
+    wifiList = sortWifiList(wifiList)
+    table.model.setRowCount(len(wifiList))
+    for index, wifi in enumerate(wifiList):
         item = QStandardItem(wifi.ssid)
         table.model.setItem(index, 0, item)
 
@@ -59,8 +99,9 @@ def showData(ssidList):
         item2 = QStandardItem(str(wifi.akm[0]))
         table.model.setItem(index, 2, item2)
 
-    strftime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    headers[0] = "热点SID (" + strftime + ")"
+    # 实时显示时间表示最后扫描时间
+    time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    headers[0] = "热点SID (" + time_str + ")"
     table.model.setHorizontalHeaderLabels(headers)
 
 

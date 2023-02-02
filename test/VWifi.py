@@ -85,7 +85,7 @@ class WifiDriver(object):
 
 if __name__ == '__main__':
 
-    wifi_instance = WifiDriver(wifi_conf)
+    wifi_instance = WifiDriver(wifi_conf2)
 
     wifi_instance.scan_wifi()
 
