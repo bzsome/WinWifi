@@ -1,4 +1,5 @@
 import socket
+import traceback
 
 import requests
 
@@ -9,7 +10,13 @@ def get_ip():
 
 
 def get_location():
-    response = requests.get(f'https://ipapi.co/json/').json()
+    try:
+        response = requests.get('https://ipapi.co/json/')
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return {}
+    response = response.json()
     location_data = {
         "ip": response.get("ip"),
         "city": response.get("city"),
@@ -33,6 +40,7 @@ def get_lan_ip():
         print(e)
     finally:
         skt.close()
+
 
 def get_lan_ip2():
     hostname, alias_list, ipaddr_list = socket.gethostbyname(socket.gethostname())

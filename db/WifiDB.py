@@ -4,13 +4,11 @@ from datetime import datetime
 
 global cursor, connection
 # 数据库存储目录
-db_dir = "data"
+db_dir = os.environ['USERPROFILE'] + "/bzchao/PyWifi"
 # 数据库文件名
 db_name = "wifi.db"
 
-os.makedirs(db_dir, exist_ok=True)
-connection = sqlite3.connect(db_dir + "/" + db_name)
-cursor = connection.cursor()
+global connection, cursor
 
 
 def create_wifi_table():
@@ -55,8 +53,16 @@ def update_wifi(ssid, pwd):
     connection.commit()
 
 
-if __name__ == '__main__':
+def init_db():
+    global connection, cursor
+    os.makedirs(db_dir, exist_ok=True)
+    connection = sqlite3.connect(db_dir + "/" + db_name)
+    cursor = connection.cursor()
     create_wifi_table()
+
+
+if __name__ == '__main__':
+    init_db()
     update_wifi("gtneo", "12345678")
     wifi = get_wifi("gtneo")
     print(wifi)

@@ -1,12 +1,11 @@
 import time
 
-from PyQt6 import QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItem, QStandardItemModel
 from PyQt6.QtWidgets import *
 
-import WifiData
-import WifiScan
+from db import WifiDB
+from util import WifiScan
 from WifiBoard import WifiBoard
 
 headers = ["热点SID", "型号强度", "加密方式"]
@@ -36,15 +35,15 @@ class WifiTable(QWidget):
         self.model.setHorizontalHeaderLabels(headers)
         self.tableView.setModel(self.model)
         # 调整列宽（必须在setModel之后执行）
-        self.tableView.setColumnWidth(0, 200)
+        self.tableView.setColumnWidth(0, 240)
         self.tableView.setColumnWidth(1, 100)
         self.tableView.setColumnWidth(2, 100)
         self.tableView.setColumnWidth(3, 100)
 
         # 允许打开上下文菜单
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tableView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         # 绑定事件
-        self.customContextMenuRequested.connect(self.generate_menu)
+        self.tableView.customContextMenuRequested.connect(self.generate_menu)
 
         # 设置布局
         layout = QVBoxLayout()
@@ -59,25 +58,25 @@ class WifiTable(QWidget):
             rowNum = i.row()
         menu = QMenu()
         item1 = menu.addAction("连接")
-        item2 = menu.addAction("修改密码")
+        item2 = menu.addAction("属性")
 
         # 转换坐标系
-        screenPos = self.mapToGlobal(pos)
+        screenPos = self.tableView.mapToGlobal(pos)
         # 被阻塞
         action = menu.exec(screenPos)
         if action == item1:
             ssid = self.model.item(rowNum, 0).text()
             oldPwd = ""
             # 第三个参数表示显示类型，可选，有正常（QLineEdit.Normal）、密碼（ QLineEdit.Password）、不显示（ QLineEdit.NoEcho）三种情况
-            oldWifi = WifiData.get_wifi(ssid)
+            oldWifi = WifiDB.get_wifi(ssid)
             if oldWifi.get("ssid") is not None:
                 oldPwd = oldWifi.get("pwd")
             newPwd, ok = QInputDialog.getText(self, "连接 " + ssid, "请输入密码，无密码请留空:", text=oldPwd)
             if ok:
-                WifiData.update_wifi(ssid, newPwd)
+                WifiDB.update_wifi(ssid, newPwd)
                 WifiScan.connect_wifi(ssid, newPwd)
         if action == item2:
-            print("暂不支持")
+            QMessageBox.information(None, '提示', '暂不支持', QMessageBox.StandardButton.Yes)
         else:
             return
 
@@ -119,7 +118,7 @@ def sort_wifi_list(wifiList):
             wifiItem.preIndex = 0
     # 计算排序得分
     for wifiItem in wifiList:
-        preIndex = get_wifi_preIndex(wifiItem.ssid)
+        preIndex = get_wifi_pre_index(wifiItem.ssid)
         # 根据此算法，信号强度差距小于5，则不调整顺序
         wifiItem.sortScore = wifiItem.signal + (len(wifiList) - preIndex) * 5
     # 根据排序得分进行排序
@@ -132,7 +131,8 @@ def sort_wifi_list(wifiList):
     return wifiList2
 
 
-def get_wifi_preIndex(ssid):
+# 获取展示的wifi次序
+def get_wifi_pre_index(ssid):
     global showWifiMap
     showWifi = showWifiMap.get(ssid)
     if showWifi is None or not hasattr(showWifi, 'preIndex'):
