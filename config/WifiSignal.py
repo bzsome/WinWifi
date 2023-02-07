@@ -1,23 +1,18 @@
-from PyQt6 import QtCore
-from PyQt6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 
 class WifiSignal(QObject):
     # 声明一个信号 只能放在函数的外面
-    board_signal = QtCore.pyqtSignal(dict)
-
-    def __init__(self):
-        super().__init__()
-        pass
+    board_signal = Signal(dict)
 
     def emit2(self, data):
         self.board_signal.emit(data)
 
-    def connect(self, solt):
+    def connect2(self, solt):
         self.board_signal.connect(solt)
 
 
-board_signal = WifiSignal()
+wifi_signal = WifiSignal()
 
 
 def testa(data):
@@ -27,6 +22,6 @@ def testa(data):
 
 
 if __name__ == '__main__':
-    board_signal.connect(testa)
-    board_signal.emit2({"lan_ip": "a"})
+    wifi_signal.connect2(testa)
+    wifi_signal.emit2({"lan_ip": "a"})
     print("aaaaaa")

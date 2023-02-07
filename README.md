@@ -20,8 +20,8 @@ wifi连接工具，快速连接wifi，解决widow11系统切换wifi慢的问题
 
 - 打包命令：
 
-nuitka --standalone --disable-console ^
---plugin-enable=pyqt6 ^
---include-package=chardet ^
---output-dir=out ^
-WifiMain.py
+build.bat
+
+- 打包结果：
+
+nuitka打包后13.8M，压缩后仅3.8M

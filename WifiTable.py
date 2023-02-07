@@ -1,8 +1,9 @@
 import time
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QStandardItem, QStandardItemModel
-from PyQt6.QtWidgets import *
+from PySide6 import QtGui
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QStandardItem, QStandardItemModel
+from PySide6.QtWidgets import *
 
 from db import WifiDB
 from util import WifiScan
@@ -22,8 +23,10 @@ showWifiMap = {}
 class WifiTable(QWidget):
     def __init__(self, parent=None):
         super(WifiTable, self).__init__(parent)
+
         # 设置标题与初始大小
         self.setWindowTitle('Wifi快速连接工具')
+        self.setWindowIcon(QtGui.QIcon('./docs/logo.ico'))
         self.resize(600, 600)
         # 实例化表格视图，设置模型为自定义的模型
         self.tableView = QTableView()

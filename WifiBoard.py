@@ -1,8 +1,8 @@
 import sys
 
-from PyQt6 import QtCore
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QApplication, QTextEdit, QTextBrowser, QMenu
+from PySide6 import QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QApplication, QTextEdit, QTextBrowser, QMenu
 
 import util.WifiScan
 from config import WifiSignal
@@ -13,7 +13,7 @@ class WifiBoard(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        WifiSignal.board_signal.connect(self.update_data)
+        WifiSignal.wifi_signal.connect2(self.update_data)
 
     def init_ui(self):
         self.resize(400, 100)

@@ -26,7 +26,7 @@ def update_wifi_status():
     try:
         wifiStatus = WifiScan.get_wifi_status()
         if wifiStatus is not None and len(wifiStatus) >= 1:
-            WifiSignal.board_signal.emit2({"ssid": wifiStatus[0].ssid})
+            WifiSignal.wifi_signal.emit2({"ssid": wifiStatus[0].ssid})
     except Exception as e:
         traceback.print_exc()
         print("get_wifi_status failed", e)
@@ -39,7 +39,7 @@ def update_lan_ip():
     try:
         time.sleep(0.8)
         lan_ip = IpUtil.get_lan_ip()
-        WifiSignal.board_signal.emit2({"lan_ip": lan_ip})
+        WifiSignal.wifi_signal.emit2({"lan_ip": lan_ip})
     except Exception as e:
         traceback.print_exc()
         print("get_lan_ip failed", e)
@@ -53,7 +53,7 @@ def update_ip_info():
         ip_info = "{_city}/{_region} ({_org})".format(_city=location.get("city"),
                                                       _region=location.get("region"),
                                                       _org=location.get("org"))
-        WifiSignal.board_signal.emit2({"wan_ip": location.get("ip"), "ip_info": ip_info})
+        WifiSignal.wifi_signal.emit2({"wan_ip": location.get("ip"), "ip_info": ip_info})
     except Exception as e:
         traceback.print_exc()
         print("get_ip failed", e)

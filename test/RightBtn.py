@@ -1,8 +1,8 @@
 import sys
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QWidget, QTableWidget, QTableWidgetItem, QMenu, QVBoxLayout
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QWidget, QTableWidget, QTableWidgetItem, QMenu, QVBoxLayout
 
 '''
 在 QTableWidget 表格中实现右键快捷菜单 的案例

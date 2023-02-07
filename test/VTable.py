@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
+from PySide6.QtWidgets import *
+from PySide6.QtCore import *
 
 headers = ["SID热点", "型号强度", "加密方式"]
 
