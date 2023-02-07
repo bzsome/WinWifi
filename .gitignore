@@ -5,6 +5,7 @@
 *.egg-info
 dist
 build
+out
 
 #idea
 .idea
