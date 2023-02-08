@@ -15,7 +15,8 @@ global timers
 def update_wifi_list():
     try:
         wifiMap = WifiScan.scan_wifi(0.1)
-        WifiTable.showData(wifiMap)
+        if wifiMap is not None:
+            WifiTable.showData(wifiMap)
     except Exception as e:
         traceback.print_exc()
         print("scan_wifi failed", e)
@@ -23,6 +24,8 @@ def update_wifi_list():
 
 # 监控Wifi状态
 def update_wifi_status():
+    if WifiScan.get_iface() is None:
+        return
     try:
         wifiStatus = WifiScan.get_wifi_status()
         if wifiStatus is not None and len(wifiStatus) >= 1:

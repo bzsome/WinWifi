@@ -20,8 +20,9 @@ wifi连接工具，快速连接wifi，解决widow11系统切换wifi慢的问题
 
 - 打包命令：
 
-build.bat
+  - 发布打包：build.bat  不显示控制台，压缩可执行文件
+  - 测试打包：dev.bat  显示控制台，不进行压缩
 
 - 打包结果：
 
-nuitka打包后13.8M，压缩后仅3.8M
+nuitka打包后19.8M，压缩后仅3.8M

@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QStandardItem, QStandardItemModel
 from PySide6.QtWidgets import *
 
+from config import WifiSignal
 from db import WifiDB
 from util import WifiScan
 from WifiBoard import WifiBoard
@@ -84,10 +85,17 @@ class WifiTable(QWidget):
             return
 
 
+def check_wifi_interface():
+    if WifiScan.get_iface() is None:
+        WifiSignal.wifi_signal.emit2({"ssid": "找不到WiFi网卡，请连接WiFi网卡后重启程序"})
+        QMessageBox.warning(None, '提示', '找不到WiFi网卡，请连接WiFi网卡后重启程序', QMessageBox.StandardButton.Yes)
+
+
 def showApp():
     global table
     table = WifiTable()
     table.show()
+    check_wifi_interface()
 
 
 # 显示数据

@@ -4,17 +4,23 @@ import pywifi
 
 global iface, scanWifiMap
 wifi = pywifi.PyWiFi()
-iface = wifi.interfaces()[0]
+global iface
+iface = None
 scanWifiMap = {}
 
 
 def get_iface():
-    # TODO 没有网卡检查
     global iface
+    if iface is None:
+        interfaces = wifi.interfaces()
+        if len(interfaces) >= 1:
+            iface = interfaces[0]
     return iface
 
 
 def scan_wifi(timeout=1):
+    if get_iface() is None:
+        return
     global scanWifiMap
     """扫描可用wifi"""
     wifiMapTemp = {}
@@ -39,6 +45,8 @@ def scan_wifi(timeout=1):
 
 
 def connect_wifi(ssid, pwd):
+    if get_iface() is None:
+        return
     global scanWifiMap
     sWifi = scanWifiMap.get(ssid)
     profile = pywifi.Profile()
@@ -57,10 +65,14 @@ def connect_wifi(ssid, pwd):
 
 
 def get_wifi_status():
+    if get_iface() is None:
+        return
     return get_iface().network_profiles()
 
 
 def clear():
+    if get_iface() is None:
+        return
     """清除所有网络连接"""
     get_iface().remove_all_network_profiles()
     time.sleep(0.1)

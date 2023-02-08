@@ -2,10 +2,11 @@ import sys
 
 from PySide6 import QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QApplication, QTextEdit, QTextBrowser, QMenu
+from PySide6.QtWidgets import *
 
 import util.WifiScan
 from config import WifiSignal
+from util import WifiScan
 
 
 # wifi面板
