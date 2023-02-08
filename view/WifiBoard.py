@@ -1,12 +1,11 @@
 import sys
+import threading
 
-from PySide6 import QtCore
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
 import util.WifiScan
 from config import WifiSignal
-from util import WifiScan
 
 
 # wifi面板
@@ -23,7 +22,7 @@ class WifiBoard(QWidget):
         # 第1行
         self.wifi_textView = QTextBrowser(self)  # 调取文本浏览框显示文本内容
         self.wifi_textView.setText(" - 解决win11系统切换WiFi卡顿，切换慢的问题。支持记住Wifi密码，3-10秒完成WiFi的切换。")
-        self.wifi_textView.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.wifi_textView.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.wifi_textView.setMaximumHeight(28)
         layout.addWidget(self.wifi_textView, 0, 0, 1, 6)
 
@@ -70,7 +69,7 @@ class WifiBoard(QWidget):
         # 被阻塞
         action = menu.exec(screenPos)
         if action == item1:
-            util.WifiScan.clear()
+            threading.Thread(target=util.WifiScan.clear).start()
         else:
             return
 

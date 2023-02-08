@@ -1,5 +1,4 @@
 import socket
-import traceback
 
 import requests
 
@@ -13,7 +12,6 @@ def get_location():
     try:
         response = requests.get('https://ipapi.co/json/')
     except Exception as e:
-        traceback.print_exc()
         print(e)
         return {}
     response = response.json()
@@ -22,7 +20,8 @@ def get_location():
         "city": response.get("city"),
         "region": response.get("region"),
         "country": response.get("country_name"),
-        "org": response.get("org")
+        "org": response.get("org"),
+        "errMsg": response.get("reason")
     }
     return location_data
 

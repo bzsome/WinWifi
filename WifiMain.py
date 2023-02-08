@@ -5,9 +5,9 @@ from PySide6 import QtGui
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QApplication
 
-import WifiTable
 import WifiThread
 from db import WifiDB
+from view import WifiWindow
 
 app = QApplication([])
 # 设置任务图标
@@ -16,8 +16,8 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)  # Qt从5.6.0开始，支�
 app.setWindowIcon(QtGui.QIcon('/docs/logo.ico'))
 
 WifiDB.init_db()
-print("showApp()")
-WifiTable.showApp()
+print("show_window()")
+WifiWindow.show_window()
 print("start_thread()")
 WifiThread.start_thread()
 try:
