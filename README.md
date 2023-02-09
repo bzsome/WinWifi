@@ -2,6 +2,10 @@
 
 wifi连接工具，快速连接wifi，解决widow11系统切换wifi慢的问题
 
+## 直接下载程序
+
+- wifi连接工具Windows版： [WinWifi_1.0.exe](https://github.com/bzsome/WinWifi/releases/download/v1.0/WinWifi_1.0.exe)
+
 ## 运行效果图
 
 - 程序主界面（windows）
