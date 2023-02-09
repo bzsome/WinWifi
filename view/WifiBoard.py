@@ -6,6 +6,7 @@ from PySide6.QtWidgets import *
 
 import util.WifiScan
 from config import WifiSignal
+from util import OsUtils
 
 
 # wifi面板
@@ -21,7 +22,10 @@ class WifiBoard(QWidget):
 
         # 第1行
         self.wifi_textView = QTextBrowser(self)  # 调取文本浏览框显示文本内容
-        self.wifi_textView.setText(" - 解决win11系统切换WiFi卡顿，切换慢的问题。支持记住Wifi密码，3-10秒完成WiFi的切换。")
+        self.wifi_textView.setOpenExternalLinks(True)
+        github_link = '<a href="https://github.com/bzsome">https://github.com/bzsome</a>'
+        self.wifi_textView.setText("- 解决win11系统切换WiFi卡顿，切换慢的问题。获取更多帮助 " + github_link)
+        self.wifi_textView.anchorClicked.connect(OsUtils.open_url)
         self.wifi_textView.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.wifi_textView.setMaximumHeight(28)
         layout.addWidget(self.wifi_textView, 0, 0, 1, 6)
@@ -32,14 +36,17 @@ class WifiBoard(QWidget):
         self.ssidText = QPushButton("-", self)
         layout.addWidget(self.ssidText, 1, 1, 1, 3)
         self.lanIpText = QPushButton("-", self)
+        self.lanIpText.setToolTip("局域网IP地址")
         layout.addWidget(self.lanIpText, 1, 4, 1, 2)
 
         # 第4行
         button01 = QPushButton("公网IP：", self)
         layout.addWidget(button01, 2, 0)
         self.ipInfoText = QPushButton("-", self)
+        self.ipInfoText.setToolTip("公网IP位置信息/通信运营商")
         layout.addWidget(self.ipInfoText, 2, 1, 1, 3)
         self.wanIpText = QPushButton("-", self)
+        self.wanIpText.setToolTip("公网IP地址")
         layout.addWidget(self.wanIpText, 2, 4, 1, 2)
 
         # 允许打开上下文菜单

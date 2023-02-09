@@ -4,4 +4,5 @@ nuitka --standalone --onefile ^
 --plugin-enable=pyside6 ^
 --include-package=chardet ^
 --output-dir=out ^
+--run ^
 WifiMain.py

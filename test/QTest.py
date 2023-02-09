@@ -5,7 +5,7 @@ from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 
-
+print("QTest.py")
 class Table(QWidget):
     def __init__(self, parent=None):
         super(Table, self).__init__(parent)

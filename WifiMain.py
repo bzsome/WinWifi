@@ -1,8 +1,5 @@
-import ctypes
 import sys
 
-from PySide6 import QtGui
-from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QApplication
 
 import WifiThread
@@ -10,10 +7,6 @@ from db import WifiDB
 from view import WifiWindow
 
 app = QApplication([])
-# 设置任务图标
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("starter")
-QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)  # Qt从5.6.0开始，支持High-DP
-app.setWindowIcon(QtGui.QIcon('/docs/logo.ico'))
 
 WifiDB.init_db()
 print("show_window()")

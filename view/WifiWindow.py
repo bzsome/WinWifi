@@ -5,6 +5,7 @@ from PySide6 import QtGui
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import *
 
+import util.OsUtils
 from config import WifiSignal
 from util import WifiScan
 from view import WifiTable, WifiBoard
@@ -18,7 +19,6 @@ class WifiWindow(QWidget):
 
         # 设置标题与初始大小
         self.setWindowTitle('Wifi快速连接工具')
-        self.setWindowIcon(QtGui.QIcon('/docs/logo.ico'))
         self.resize(600, 600)
 
         # 设置布局
@@ -42,13 +42,22 @@ def check_wifi_interface():
 def show_window():
     global wifi_window
     wifi_window = WifiWindow()
-    # 设置任务图标
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("starter")
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)  # Qt从5.6.0开始，支持High-DP
-    wifi_window.setWindowIcon(QtGui.QIcon('/docs/logo.ico'))
+
+    set_icon(wifi_window)
 
     wifi_window.show()
     check_wifi_interface()
+
+
+def set_icon(wifi_window):
+    # 配置后显示任务栏图标
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("starter")
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    util.OsUtils.get_base_path()
+    # 设置左上角图标
+    ico_path = util.OsUtils.get_file_base_path('docs/logo.ico')
+    print("ico_path:" + ico_path)
+    wifi_window.setWindowIcon(QtGui.QIcon(ico_path))
 
 
 # 显示数据
